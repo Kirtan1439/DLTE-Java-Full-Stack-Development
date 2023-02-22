@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction  History</Details></title>
+</head>
+<body>
+    <script>
+        let transactionId, transactionMode, transactionType,transactionDate ,  transactionAmount;     //dont have valuse since we will take it as input
+        window.onload=function() { 
+        //to ask for transaction details
+        transactionId=prompt("User transaction id","")
+        transactionMode=prompt("User mode of transaction","")
+        transactionType=prompt("User type of transaction","")
+        transactionDate=prompt("User date of transaction","")
+        transactionAmount=prompt("Amount of transaction","")
+        var view = document.getElementById("show")
+            view.innerHTML="Transaction details are : Id "+transactionId+" mode of transaction "+transactionMode+" of type "+transactionType+" on date "+transactionDate +" of amount "+transactionAmount
+        }
+        </script>
+        <p id="show">Result Will be shown here!!!</p>
+        </body>
+        </html>
+
