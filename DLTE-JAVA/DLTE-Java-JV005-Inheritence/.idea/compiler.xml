@@ -6,7 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="DLTE-Java-Java005-Inheritance" />
+        <module name="DLTE-Java-JV005-Inheritence" />
       </profile>
     </annotationProcessing>
   </component>
