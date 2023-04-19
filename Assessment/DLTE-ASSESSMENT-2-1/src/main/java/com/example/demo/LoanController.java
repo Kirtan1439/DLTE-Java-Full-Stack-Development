@@ -1,27 +1,27 @@
 package com.example.demo;
 
+import com.example.demo.LoanModel;
+import com.example.demo.LoanServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class LoanController {
     @Autowired
-    private PersonalLoanService personalLoanService;
+    private LoanServices loanServices;
 
-    @GetMapping("/retrieve")
-    public List<LoanModel> callingFetch(){
-        return PersonalLoanService.implementOfFetch();
-    }
-
-    @PostMapping("/insert")
-    public LoanModel callingSave(@RequestBody LoanModel personalLoan){
-        return PersonalLoanService.implementOfSave(personalLoan);
+    @PutMapping("/status")
+    public void callStatus(){
+        loanServices.implementUpdate();
     }
 
     @GetMapping("/rejected")
-    public List<LoanModel> callingFindAllRejected(){
-        return PersonalLoanService.implementOfFindAllRejected();
+    public List<Object[]> callRejected(){
+        return loanServices.implementRejectedLoans();
     }
 }

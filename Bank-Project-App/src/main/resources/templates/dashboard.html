@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <title>Document</title>
+        <script>
+
+            var user=sessionStorage.getItem("logged");
+        $(document).ready(()=> {
+
+            $("#dashTable").empty();
+            $("#search").click(() => {
+                let fromDate=$("#from").val();
+                let toDate=$("#to").val();
+                // let userName=$("#name").val();
+                $(".rows").remove();
+                // alert(fromDate+toDate+userName);
+                $.get("http://localhost:8084/app/retrieve/"+user+"/"+fromDate+"/"+toDate, function (data) { //displaying
+                    // alert("hi");
+                    transactionList = data;
+                    // alert(data);
+
+                    transactionList.map(function(item) {
+                            $("tbody").append("<tr class='rows'><td>"+item.txnId + "</td><td>" + item.txnFrom + "</td><td>" + item.txnAmount + "</td><td>" + item.txnStatus + "</td><td>" + item.txnDate + "</td><td>" + item.txnTo + "</td></tr>");
+                        }
+                    )
+                //     $.each(transactionList,function(transactionindex, item) {
+                //         alert(transactionList)
+                //          $("tbody").append("<tr class='rows'><td>"+item.TxnId + "</td><td>" + item.TxnFrom + "</td><td>" + item.TxnAmount + "</td><td>" + item.TxnStatus + "</td><td>" + item.TxnDate + "</td><td>" + item.TxnTo + "</td></tr>");
+                // }
+                    //)
+                })
+            })
+            $("#amntbtn").click(()=> {
+                window.location.href="http://localhost:8084/web/amountsearch"
+            })
+        });
+    </script>
+    <script>
+        $(document).ready(()=> {
+
+        })
+    </script>
+<!--    <script>-->
+<!--        var saopRequest="<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap=\"http://soap.transaction.project\">\n" +-->
+<!--            "   <soapenv:Header/>\n" +-->
+<!--            "   <soapenv:Body>\n" +-->
+<!--            "      <soap:listTransactionRequest>\n" +-->
+<!--            "         <soap:username>Kirtan</soap:username>\n" +-->
+<!--            "         <soap:amount1>10000</soap:amount1>\n" +-->
+<!--            "         <soap:amount2>50000</soap:amount2>\n" +-->
+<!--            "      </soap:listTransactionRequest>\n" +-->
+<!--            "   </soapenv:Body>\n" +-->
+<!--            "</soapenv:Envelope>"-->
+
+<!--        $(document).ready(()=>{-->
+<!--            $.ajax({-->
+<!--                url:"http://localhost:8082/loanpoint",-->
+<!--                type:"POST",-->
+<!--                dataType:"xml",-->
+<!--                contentType:"text/xml;charset=\"UTF-8\"",-->
+<!--                data:soapRequest,-->
+<!--                success:(data)=>{-->
+<!--                    alert("Display all types of loan");-->
+<!--                    alert("Click on CALCULATE EMI for calculating EMI for your loan type")-->
+<!--                    $(data).find('ns2\\:transaction').each(function(){-->
+<!--                        var id=$(this).find('ns2\\:TxnId').text();-->
+<!--                        var  from=$(this).find('ns2\\:TxnFrom').text();-->
+<!--                        var amount=$(this).find('ns2\\:TxnAmount').text();-->
+<!--                        var status=$(this).find('ns2\\:TxnStatus').text();-->
+<!--                        var date=$(this).find('ns2\\:TxnDate').text();-->
+<!--                        var to=$(this).find('ns2\\:TxnTo').text();-->
+
+
+<!--                        $("tbody").append("<tr><td>"+id+"</td><td>"+from+"</td><td>"+amount+"</td><td>"+status+"</td><td>"+date+"</td><td>"+to+"</td></tr>");-->
+<!--                    });-->
+<!--                },-->
+<!--                error:()=>{-->
+<!--                    alert("error")-->
+
+<!--                }-->
+<!--            });-->
+<!--            $("#personalbtn").click(()=>{-->
+<!--                window.location.href="http://localhost:8082/web/personalloan?id=41";-->
+<!--            })-->
+<!--        })-->
+
+<!--        }-->
+
+<!--    </script>-->
+
+
+</head>
+<body>
+<style>
+    body
+    {
+        font-family:sans-serif;
+        background: -webkit-linear-gradient(to right, #155799, #159957);
+        background: linear-gradient(to right, #155799, #159957);
+        color:whitesmoke;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+
+    }
+
+    table {
+
+        border-collapse: collapse;
+        margin: 80px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        width: 80%;
+        background-color:gray;
+        box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+        border-radius: 10px;
+    }
+    th, td {
+
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    th {
+        background-color: #005b8f;
+        color: white;
+        font-weight: bold;
+
+    }
+    input[type=submit] {
+        background-color: whitesmoke;
+        color: black;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+</style>
+
+<div >
+
+
+    <marquee width="100%" direction="right" height="80px">
+        <h4>Transaction Details</h4>
+    </marquee>
+    <div class="justify-content-center mt-1 ">
+        <table>
+           <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Transaction FROM</th>
+                <th>Transaction AMOUNT</th>
+                <th>Transaction STATUS</th>
+                <th>Transaction DATE</th>
+                <th>Transaction TO</th>
+            </tr>
+           </thead>
+            <tbody id="dashTable">
+
+
+            </tbody>
+
+        </table>
+        <form>
+
+            <div>
+                <label>Transaction Date From:</label>
+                <input type="date"  id="from"  placeholder="From" name="search"><br><br>
+                <label>Transaction Date To:</label>
+                <input type="date" id="to"  placeholder="From" name="search"><br><br>
+
+<!--                <label>User Name</label>-->
+<!--                <input type="text" id="name"  placeholder="username" name="search"><br><br>-->
+
+            </div>
+
+  <div>
+    <button type="button"  name="search" id="search"> Search</button>
+    <a href=""> <button type="button" id="id">clear</button></a>
+  </div>
+
+
+            <div class="mt-4">
+                <button type="button" class="btn btn-secondary" id="amntbtn">Amount Range</button>
+<!--            </div>-->
+
+<!--            <div class="text-right mt-3">-->
+                <a href="http://localhost:8084/web/profile">
+                    <button type="button"  class="btn btn-secondary">Update Profile</button>
+                </a>
+
+
+            </div>
+
+        </form>
+<!--        <div>-->
+<!--            <label>Transaction amount Range:</label>-->
+<!--            <input type="number"  id="from"  placeholder="From" name="search"><br><br>-->
+<!--            <label>Transaction amount To:</label>-->
+<!--            <input type="date" id="to"  placeholder="From" name="search"><br><br>-->
+
+<!--            <label>User Name</label>-->
+<!--            <input type="text" id="name"  placeholder="username" name="search"><br><br>-->
+
+<!--        </div>-->
+
+
+
+
+    </div>
+</div>
+</body>
+</html>

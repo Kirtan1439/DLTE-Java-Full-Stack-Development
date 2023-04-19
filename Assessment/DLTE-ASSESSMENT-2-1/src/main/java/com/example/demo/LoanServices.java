@@ -1,18 +1,22 @@
 package com.example.demo;
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface LoanRepository extends CrudRepository<LoanModel,Integer> {
+@Service
+public class LoanServices {
+    @Autowired
+    private LoanRepository loanRepository;
 
-    @Query(value = "select * from LoanModel where cibil>700 and profession=('selfemployed','salaried') and income=(amt*3)", nativeQuery = true)
-    Optional<LoanModel> findPersonalLoanApplicationByStatus(int cibil, String profession, int income);
+    public void implementUpdate(){
+        loanRepository.updateStatus();
+    }
 
-    @Query(value = "select * from LoanModle where status=('rejected')", nativeQuery = true)
-    List<String> findAllByStatus(String status);
+    public List<Object[]> implementRejectedLoans(){
+        return loanRepository.fetchByStatus();
+    }
 }

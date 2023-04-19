@@ -1,0 +1,47 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://soap.transaction.project"
+            xmlns:tns="http://soap.transaction.project"
+            elementFormDefault="qualified">
+
+    <!-- POJO -->
+    <xsd:complexType name="transaction">
+        <xsd:sequence>
+            <xsd:element name="TxnId" type="xsd:int" />
+            <xsd:element name="TxnFrom" type="xsd:long"/>
+            <xsd:element name="TxnAmount" type="xsd:int" />
+            <xsd:element name="TxnStatus" type="xsd:string" />
+            <xsd:element name="TxnDate" type="xsd:string" />
+            <xsd:element name="TxnTo" type="xsd:long"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!--ServiceStatus-->
+    <xsd:complexType name="serviceStatus">
+        <xsd:sequence>
+            <xsd:element name="status" type="xsd:string" />
+            <xsd:element name="message" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="listTransactionRequest">
+        <xsd:complexType>
+        <xsd:sequence>
+            <xsd:element name="username" type="xsd:string"/>
+            <xsd:element name="amount1" type="xsd:int"/>
+            <xsd:element name="amount2" type="xsd:int"/>
+        </xsd:sequence>
+        </xsd:complexType>
+
+
+        <!--        <xsd:complexType/>-->
+    </xsd:element>
+    <xsd:element name="listTransactionResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="status" type="tns:serviceStatus" />
+                <xsd:element name="transaction" type="tns:transaction" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
+
