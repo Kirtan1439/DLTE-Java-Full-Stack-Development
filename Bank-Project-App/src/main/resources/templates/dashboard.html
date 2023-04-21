@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,37 +10,61 @@
 
     <title>Document</title>
         <script>
-
-            var user=sessionStorage.getItem("logged");
+            //ajax post method to search for date range
+            var user;
         $(document).ready(()=> {
-
+            $.get("http://localhost:8084/app/username",function (data) {
+                    user = data;
+            })
             $("#dashTable").empty();
             $("#search").click(() => {
                 let fromDate=$("#from").val();
                 let toDate=$("#to").val();
-                // let userName=$("#name").val();
+                // let user=$("#name").val();
+                $("#error").remove();
                 $(".rows").remove();
                 // alert(fromDate+toDate+userName);
-                $.get("http://localhost:8084/app/retrieve/"+user+"/"+fromDate+"/"+toDate, function (data) { //displaying
-                    // alert("hi");
-                    transactionList = data;
-                    // alert(data);
+                try {
+                    if(fromDate==""||toDate==""){
+                        throw "Please Enter Valid Date Range"
+                    }
+                    else if(toDate==""){
+                        throw "Please Enter To Date"
+                    }
+                    else if(fromDate==""){
+                        throw "Please Enter From Date"
+                    }
+                    else if (fromDate > toDate) {
+                        throw "Invalid Date Range"
+                    }
 
-                    transactionList.map(function(item) {
-                            $("tbody").append("<tr class='rows'><td>"+item.txnId + "</td><td>" + item.txnFrom + "</td><td>" + item.txnAmount + "</td><td>" + item.txnStatus + "</td><td>" + item.txnDate + "</td><td>" + item.txnTo + "</td></tr>");
-                        }
-                    )
-                //     $.each(transactionList,function(transactionindex, item) {
-                //         alert(transactionList)
-                //          $("tbody").append("<tr class='rows'><td>"+item.TxnId + "</td><td>" + item.TxnFrom + "</td><td>" + item.TxnAmount + "</td><td>" + item.TxnStatus + "</td><td>" + item.TxnDate + "</td><td>" + item.TxnTo + "</td></tr>");
-                // }
-                    //)
-                })
+                }
+                catch(errormessage){
+                    $("#responseMessage").append("<div class='row  text-danger ' id='error'><p class='text-center'>" + errormessage + "</p></div>")
+
+                }
+
+
+                    $.get("http://localhost:8084/app/retrieve/" + user + "/" + fromDate + "/" + toDate, function (data) { //displaying
+                        // alert("hi");
+                        transactionList = data;
+                        // alert(data);
+
+                        transactionList.map(function (item) {
+                                $("tbody").append("<tr class='rows'><td>" + item.txnId + "</td><td>" + item.txnFrom + "</td><td>" + item.txnAmount + "</td><td>" + item.txnStatus + "</td><td>" + item.txnDate + "</td><td>" + item.txnTo + "</td></tr>");
+                            }
+                        )
+
+                    })
+
             })
+
             $("#amntbtn").click(()=> {
                 window.location.href="http://localhost:8084/web/amountsearch"
             })
+
         });
+
     </script>
     <script>
         $(document).ready(()=> {
@@ -102,8 +126,6 @@
     body
     {
         font-family:sans-serif;
-        background: -webkit-linear-gradient(to right, #155799, #159957);
-        background: linear-gradient(to right, #155799, #159957);
         color:whitesmoke;
     }
     form {
@@ -112,6 +134,10 @@
         align-items: center;
         margin-top: 50px;
 
+    }
+    a{
+        text-decoration: none;
+        color: white;
     }
 
     table {
@@ -124,6 +150,11 @@
         background-color:gray;
         box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
         border-radius: 10px;
+    }
+    label {
+        display: inline-block;
+        width: 100px;
+        text-align: right;
     }
     th, td {
 
@@ -150,12 +181,71 @@
 </style>
 
 <div >
+    <div class="container p-lg-4 ">
+        <div class="row">
+            <div class="col">
+                <div class="float-end mb-3 mt-3">
+                    <a th:href="@{/logout}"><button class="btn btn-danger">Logout</button></a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+<!--            Navigation bar-->
+            <div class="col">
+                <nav aria-label="breadcrumb" class="bg-primary p-3 rounded-3 mb-4">
+                    <ol class="breadcrumb mb-0">
+
+                        <li class="breadcrumb-item text-dark"><a href="http://localhost:8084/web/amountsearch">Amount Range</a></li>
+                        <li class="breadcrumb-item active text-dark" aria-current="page"><a href="http://localhost:8084/web/profile">Update Profile</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
 
 
     <marquee width="100%" direction="right" height="80px">
         <h4>Transaction Details</h4>
     </marquee>
-    <div class="justify-content-center mt-1 ">
+        <div class="float-end">
+            <!--              Button to find the range between the two dates-->
+            <div  class="d-flex">
+                <input class="me-3" type="date"  id="from"   name="search">
+                <input class="me-3" type="date" id="to"  name="search">
+                <button class="btn btn-primary me-2" type="button"  name="search" id="search">Search</button>
+
+                <button class="btn btn-secondary me-5" type="button">Clear</button>
+
+            </div>
+            <div id="responseMessage"></div>
+            <div class="d-flex mt-2 mb-2">
+
+            </div>
+        </div>
+
+            <!--              To find the range between the two dates-->
+
+<!--            <div>-->
+<!--                <dl>-->
+<!--                    <dt>Transaction Date From: </dt>-->
+<!--                    <dd><input type="date"  id="from"  placeholder="From" name="search" /><br></dd>-->
+<!--                    <dt>Transaction Date To:   </dt>-->
+<!--                    <dd><input type="date" id="to"  placeholder="To" name="search" /><br></dd>-->
+
+<!--                </dl>-->
+
+
+
+<!--            </div>-->
+
+
+
+
+
+
+
+
+        <div class="justify-content-center mt-1 ">
+<!--        Table for transaction date-->
         <table>
            <thead>
             <tr>
@@ -173,38 +263,7 @@
             </tbody>
 
         </table>
-        <form>
 
-            <div>
-                <label>Transaction Date From:</label>
-                <input type="date"  id="from"  placeholder="From" name="search"><br><br>
-                <label>Transaction Date To:</label>
-                <input type="date" id="to"  placeholder="From" name="search"><br><br>
-
-<!--                <label>User Name</label>-->
-<!--                <input type="text" id="name"  placeholder="username" name="search"><br><br>-->
-
-            </div>
-
-  <div>
-    <button type="button"  name="search" id="search"> Search</button>
-    <a href=""> <button type="button" id="id">clear</button></a>
-  </div>
-
-
-            <div class="mt-4">
-                <button type="button" class="btn btn-secondary" id="amntbtn">Amount Range</button>
-<!--            </div>-->
-
-<!--            <div class="text-right mt-3">-->
-                <a href="http://localhost:8084/web/profile">
-                    <button type="button"  class="btn btn-secondary">Update Profile</button>
-                </a>
-
-
-            </div>
-
-        </form>
 <!--        <div>-->
 <!--            <label>Transaction amount Range:</label>-->
 <!--            <input type="number"  id="from"  placeholder="From" name="search"><br><br>-->
@@ -220,6 +279,8 @@
 
 
     </div>
+</div>
+</div>
 </div>
 </body>
 </html>

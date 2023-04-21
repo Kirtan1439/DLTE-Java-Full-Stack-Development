@@ -33,17 +33,22 @@ public class BankSecurity {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        //Permitting login(error)
         httpSecurity.authorizeRequests((requests)->{
-    // requests.antMatchers("/resources/static/images/**").permitAll();
+     requests.antMatchers("/resources/static/images**").permitAll();
+            requests.antMatchers("/web/login**").permitAll();
+            requests.antMatchers("/web/**").authenticated();
+
     // requests.antMatchers("/web/**","/rest/**").authenticated();
             requests.anyRequest().permitAll();
         });
 
 
-  //httpSecurity.httpBasic();
-  //httpSecurity.formLogin().loginPage("/web/login").defaultSuccessUrl("/web/dash").failureUrl("/web/login").permitAll();
+  httpSecurity.httpBasic();
+  httpSecurity.formLogin().loginPage("/web/login").defaultSuccessUrl("/web/dashboard").failureUrl("/web/login").permitAll();
         httpSecurity.logout().permitAll();
         httpSecurity.formLogin().loginPage("/web/login").usernameParameter("username").failureHandler(failureHandler).successHandler(successHandler).permitAll();
+
         httpSecurity.csrf().disable();
   //httpSecurity.authorizeRequests().antMatchers("/user/signup").permitAll();
   //httpSecurity.authorizeRequests().anyRequest().authenticated();

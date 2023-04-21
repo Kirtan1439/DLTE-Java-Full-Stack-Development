@@ -2,12 +2,9 @@ package bank.project.app;
 
 import bank.project.dao.BankService;
 import bank.project.dao.Customer;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
@@ -16,51 +13,49 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ResourceBundle;
-import org.slf4j.Logger;
 
-
-
-@Configuration
+@Component
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
-    @Autowired
-    BankService bankService;
-    ResourceBundle bundle =ResourceBundle.getBundle("message");
-    Logger logger= LoggerFactory.getLogger(Customer.class);
+    ResourceBundle resourceBundle = ResourceBundle.getBundle("message");
 
+    @Autowired
+    private BankService bankService;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        ResourceBundle bundle = ResourceBundle.getBundle("messages");
-        String userName=request.getParameter("username");
-        Customer customer= bankService.getByUsername(userName);
+        String userName = request.getParameter("username");
+  //      String passWord = request.getParameter("password");
+        Customer customer = bankService.getByUsername(userName);
+        if (customer == null) {
 
-
-        if(customer!=null) {
-            bankService.decrementAttempts(customer.getCustomer_id());
-            int attempts = bankService.getAttempts(customer.getCustomer_id());
-            if(attempts==2){
-                logger.info(bundle.getString("inPass")+bundle.getString("attempt1"));
-                super.setDefaultFailureUrl("/web/?error=" + bundle.getString("inPass")+bundle.getString("attempt1"));
-
+            exception = new LockedException(resourceBundle.getString("user"));
+            super.setDefaultFailureUrl("/web/login?error=" + resourceBundle.getString("user"));
+        } else {
+            if (customer.getCustomer_status().equalsIgnoreCase("inactive")) {
+                logger.info(resourceBundle.getString("unsuccessfull"));
+                exception = new LockedException(resourceBundle.getString("unsuccessfull"));
+                super.setDefaultFailureUrl("/web/login?error=" + resourceBundle.getString("unsuccessfull"));
+            } else {
+                bankService.incrementFailedAttempts(customer.getCustomer_id());
+                //GEtting the number of attempts the user is left with
+                int attempts = bankService.getAttempts(customer.getCustomer_id());
+                if (attempts == 1) {
+                    logger.info(resourceBundle.getString("incorrect_pw") + resourceBundle.getString("attempt2"));
+                    exception = new LockedException(resourceBundle.getString("attempt2") + resourceBundle.getString("incorrect_pw"));
+                    super.setDefaultFailureUrl("/web/login?error=" + resourceBundle.getString("incorrect_pw") + resourceBundle.getString("attempt2"));
+                } else if (attempts == 2) {
+                    logger.info(resourceBundle.getString("incorrect_pw") + resourceBundle.getString("attempt1"));
+                    exception = new LockedException(resourceBundle.getString("attempt1") + resourceBundle.getString("incorrect_pw"));
+                    super.setDefaultFailureUrl("/web/login?error=" + resourceBundle.getString("incorrect_pw") + resourceBundle.getString("attempt1"));
+                } else {
+                    logger.info(resourceBundle.getString("unsuccessfull"));
+                    exception = new LockedException(resourceBundle.getString("unsuccessfull"));
+                    bankService.updateStatus();
+                    super.setDefaultFailureUrl("/web/login?error=" + resourceBundle.getString("unsuccessfull"));
+                }
             }
-            else if(attempts==1){
-                logger.info(bundle.getString("inPass")+bundle.getString("attempt2"));
-                super.setDefaultFailureUrl("/web/?error=" + bundle.getString("inPass")+bundle.getString("attempt2"));
-            }
-            else {
-                logger.info(bundle.getString("inactive"));
-                super.setDefaultFailureUrl("/web/?error=" + bundle.getString("inactive"));
-            }
-        exception = new LockedException("Incorrect Password");
-         super.setDefaultFailureUrl("/web/?error="+"Incorrect Password..");
-        }
-        else {
-            logger.info(exception.toString());
-            super.setDefaultFailureUrl("/web/?error=" +bundle.getString("notExist") );
         }
         super.onAuthenticationFailure(request, response, exception);
-    }
 
     }
-
-
+}

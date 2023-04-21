@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,10 +12,13 @@
 
 <script>
 
-    var user=sessionStorage.getItem("logged");
+    var user;
     $(document).ready(()=>{
+        $.get("http://localhost:8084/app/username",function (data) {
+            user = data;
+        })
         $("#searchButton").click(() => {
-            alert("heloo")
+            // alert("heloo")
 
             let minimumAmount = $("#min").val();
             let  maximumAmount = $("#max").val();
@@ -30,25 +33,38 @@
                 " </soapenv:Body>\n" +
                 "</soapenv:Envelope>"
             $("#dashTable").empty();
+            $("#error").remove();
+            try {
+                // if(((/^([0-9])$/).test(maximumAmount,maximumAmount))){
+                //        throw "Please enter valid amount"
+                //    }
+                if(minimumAmount==""){
+                    throw "Please enter the minimum amount"
+                }
+                else if(maximumAmount==""){
+                    throw "Please enter the maximum amount"
+                }
+                else if (minimumAmount > maximumAmount) {
+                    throw "Invalid amount "
+                }
+
+                else if(minimumAmount==""||maximumAmount==""){
+                    throw "All fields are mandatory"
+                }
+
+
+            }
+            catch(errormessage){
+                $("#responseMessage").append("<div class=' text-danger ' id='error'><p class='text-center'>" + errormessage + "</p></div>")
+
+            }
+
             $.ajax({
                 url: "http://localhost:8084/transactionpoint",
                 type: "POST",
                 dataType: "xml",
                 contentType: "text/xml;charset=\"UTF-8\"",
                 data: soapRequest,
-                // success:(data)=> {
-                //     $("#searchButton").click(() => {
-                //         let minAmount = $("#min").val();
-                //         let maxAmount = $("#max").val();
-                //          alert(minAmount+maxAmount);
-                //         $(data).find('ns2\\:transaction'){
-                //
-                //
-                //
-                //             $("tbody").append("<tr><td>" + id + "</td><td>" + from + "</td><td>" + amount + "</td><td>" + status + "</td><td>" + date + "</td><td>" + to + "</td></tr>");
-                //         });
-                //     })
-                // },
 
                 success: (data) => {
                     $(data).find('ns2\\:transaction').each(function () {
@@ -75,9 +91,9 @@
     body
     {
         font-family:sans-serif;
-        background: -webkit-linear-gradient(to right, #155799, #159957);
-        background: linear-gradient(to right, #155799, #159957);
-        color:whitesmoke;
+        /* background: -webkit-linear-gradient(to right, #155799, #159957); */
+        /* background: linear-gradient(to right, #155799, #159957); */
+        /* color: #eee; */
     }
     form {
         display: flex;
@@ -85,6 +101,10 @@
         align-items: center;
         margin-top: 50px;
 
+    }
+    a{
+        text-decoration: none;
+        color: white;
     }
 
     table {
@@ -94,7 +114,7 @@
         font-family: Arial, sans-serif;
         font-size: 14px;
         width: 80%;
-        background-color:gray;
+        background-color:darkgray;
         box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
         border-radius: 10px;
     }
@@ -121,14 +141,53 @@
     }
 
 </style>
-
 <div >
+    <div class="container p-lg-4 ">
+        <div class="row">
+            <div class="col">
+                <div class="float-end mb-3 mt-3">
+                    <a th:href="@{/logout}"><button class="btn btn-danger">Logout</button></a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+<!--                navigation bar-->
+                <nav aria-label="breadcrumb" class="bg-primary p-3 rounded-3 mb-4">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item text-light"><a href="http://localhost:8084/web/dashboard">Transaction Date</a></li>
+                        <li class="breadcrumb-item active text-light" aria-current="page">Update Profile</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div >
 
 
-    <marquee width="100%" direction="right" height="80px">
-        <h4>Transaction Details</h4>
-    </marquee>
-    <div class="justify-content-center mt-1 ">
+            <marquee width="100%" direction="right" height="80px">
+                <h4>Transaction Details</h4>
+            </marquee>
+        </div>
+<!--        to find range between the amounts-->
+        <div class="justify-content-center mt-1 ">
+        <div class="float-end">
+            <div  class="d-flex">
+                <input class="me-3" type="number"  id="min"  placeholder="Minimum Amount" name="search">
+                <input class="me-3" type="number" id="max"  placeholder="Maximum Amount" name="search">
+                <button class="btn btn-primary me-2" type="button"  name="search" id="searchButton">Search</button>
+
+                <button class="btn btn-secondary me-5" type="button" id="id">Clear</button>
+
+            </div>
+            <div id="responseMessage"></div>
+            <div class="d-flex mt-2 mb-2">
+
+            </div>
+        </div>
+
+<!--            Tables-->
+
         <table>
             <thead>
             <tr>
@@ -146,26 +205,8 @@
             </tbody>
 
         </table>
-        <form>
-            <div>
-
-                <label>Minimum Range:</label>
-                <input type="number"  id="min"  placeholder="min range" name="search"><br><br>
-                <label>Maximum Range:</label>
-                <input type="number" id="max"  placeholder="max range" name="search"><br><br>
-
-
-            </div>
-            <div>
-                <button type="button"  name="search" id="searchButton">Search</button>
-                <button type="reset" id="id">clear</button>
-            </div>
-
-
-        </form>
 
     </div>
 </div>
-
 </body>
 </html>

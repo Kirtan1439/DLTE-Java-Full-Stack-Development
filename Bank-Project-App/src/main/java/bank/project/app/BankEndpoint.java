@@ -12,9 +12,6 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import project.transaction.soap.ListTransactionRequest;
 import project.transaction.soap.ListTransactionResponse;
-//import soap.project.bank.ListLoanRequest;
-//import soap.project.bank.ListLoanResponse;
-//import soap.project.bank.LoanScheme;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -28,6 +25,7 @@ public class BankEndpoint {
 
     @Autowired
     private BankService bankService;
+    //soap end point to view customer details
 
     @PayloadRoot(namespace = url, localPart = "listTransactionRequest")
     @ResponsePayload
@@ -35,7 +33,7 @@ public class BankEndpoint {
 //        logger.trace(listTransactionRequest. + " received");
         ListTransactionResponse response = new ListTransactionResponse();
 //        project.transaction.soap.Transaction transaction=new Transaction();
-        List<Transaction> transactionList=bankService.listAmount(listTransactionRequest.getUsername(),listTransactionRequest.getAmount1(),listTransactionRequest.getAmount2());
+        List<Transaction> transactionList=bankService.listAmountRange(listTransactionRequest.getUsername(),listTransactionRequest.getAmount1(),listTransactionRequest.getAmount2());
         List<project.transaction.soap.Transaction> list=new ArrayList<>();
 
 

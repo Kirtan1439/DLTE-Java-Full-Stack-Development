@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.crypto.Data;
+import java.security.Principal;
 import java.sql.Date;
 import java.text.ParseException;
 import java.util.List;
@@ -37,50 +38,15 @@ public class BankController {
         logger.info("Controller about print all records");
         return bankService.listAll();
     }
-    @PostMapping("/login")
-    public String authenticate(@RequestParam("username") String username, @RequestParam("password") String password) {
-        logger.info("Entered sampled function");
-        Customer customer = bankService.getByUsername(username);
-        if (customer == null){
-            logger.info(bundle.getString("notExist"));
-            return bundle.getString("notExist");
-        }
 
-        else {
-            logger.info(customer.getCustomer_status());
-            if (customer.getCustomer_status().equalsIgnoreCase("Inactive")) {
-                logger.info(bundle.getString("inactive"));
-                return bundle.getString("inactive");
-            }
-
-
-            if (!password.equals(customer.getPassword())) {
-                bankService.incrementFailedAttempts(customer.getCustomer_id());
-                int attempts = bankService.getAttempts(customer.getCustomer_id());
-                if (attempts==2) {
-                    logger.info(bundle.getString("pass") + bundle.getString("attempt1"));
-                    return bundle.getString("pass") + bundle.getString("attempt1");
-                }
-             else if (attempts==1) {
-                logger.info(bundle.getString("pass") + bundle.getString("attempt2"));
-                return bundle.getString("pass") + bundle.getString("attempt2");
-            }
-            else
-                {
-                logger.info(bundle.getString("inactive"));
-                return bundle.getString("inactive");
-            }
-        }
-        else{
-            bankService.setAttempts(customer.getCustomer_id());
-            logger.info(bundle.getString("Success"));
-            return bundle.getString("Success");
-
-        }
-        }
+    @GetMapping("/username")
+    public String getUsername(Principal principal){
+            return principal.getName();
     }
+
+
     @GetMapping("/retrieve/{username}/{dateFrom}/{dateTo}")
-    public List<Transaction> callTransaction(@PathVariable("username") String username,@PathVariable("dateFrom") String fromDate,@PathVariable("dateTo") String toDate) throws ParseException {
+    public List<Transaction> listTransactionDate(@PathVariable("username") String username,@PathVariable("dateFrom") String fromDate,@PathVariable("dateTo") String toDate) throws ParseException {
             logger.info("list of transaction date"+fromDate+toDate);
             List<Transaction> listDate=bankService.listDate(username,fromDate,toDate);
             logger.info(listDate.toString());
