@@ -23,11 +23,11 @@ public class MvnController {
     }
 
     //Profile page with controller
-
     @GetMapping("/profile")
          public String profile(){
         return "profile";
     }
+
 
     @GetMapping("/accountdash")
       public String accounts(){

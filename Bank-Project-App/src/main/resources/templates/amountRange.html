@@ -35,23 +35,43 @@
             $("#dashTable").empty();
             $("#error").remove();
             try {
-                // if(((/^([0-9])$/).test(maximumAmount,maximumAmount))){
-                //        throw "Please enter valid amount"
-                //    }
-                if(minimumAmount==""){
+
+              if(minimumAmount==""){
                     throw "Please enter the minimum amount"
                 }
                 else if(maximumAmount==""){
                     throw "Please enter the maximum amount"
                 }
-                else if (minimumAmount > maximumAmount) {
+                  else if(minimumAmount==""||maximumAmount==""){
+                          throw "All fields are mandatory"
+                  }
+                else if (parseInt(minimumAmount) > parseInt(maximumAmount)) {
                     throw "Invalid amount "
                 }
+                $.ajax({
+                    url: "http://localhost:8084/transactionpoint",
+                    type: "POST",
+                    dataType: "xml",
+                    contentType: "text/xml;charset=\"UTF-8\"",
+                    data: soapRequest,
 
-                else if(minimumAmount==""||maximumAmount==""){
-                    throw "All fields are mandatory"
-                }
+                    success: (data) => {
+                        $(data).find('ns2\\:transaction').each(function () {
+                            var id = $(this).find('ns2\\:TxnId').text();
+                            var from = $(this).find('ns2\\:TxnFrom').text();
+                            var amount = $(this).find('ns2\\:TxnAmount').text();
+                            var status = $(this).find('ns2\\:TxnStatus').text();
+                            var date = $(this).find('ns2\\:TxnDate').text();
+                            var to = $(this).find('ns2\\:TxnTo').text();
 
+                            $("#dashTable").append("<tr><td>" + id + "</td><td>" + from + "</td><td>" + amount + "</td><td>" + status + "</td><td>" + date + "</td><td>" + to + "</td></tr>");
+                        });
+                    },
+                    error: () => {
+                        alert("error")
+
+                    }
+                });
 
             }
             catch(errormessage){
@@ -59,30 +79,7 @@
 
             }
 
-            $.ajax({
-                url: "http://localhost:8084/transactionpoint",
-                type: "POST",
-                dataType: "xml",
-                contentType: "text/xml;charset=\"UTF-8\"",
-                data: soapRequest,
 
-                success: (data) => {
-                    $(data).find('ns2\\:transaction').each(function () {
-                        var id = $(this).find('ns2\\:TxnId').text();
-                        var from = $(this).find('ns2\\:TxnFrom').text();
-                        var amount = $(this).find('ns2\\:TxnAmount').text();
-                        var status = $(this).find('ns2\\:TxnStatus').text();
-                        var date = $(this).find('ns2\\:TxnDate').text();
-                        var to = $(this).find('ns2\\:TxnTo').text();
-
-                        $("#dashTable").append("<tr><td>" + id + "</td><td>" + from + "</td><td>" + amount + "</td><td>" + status + "</td><td>" + date + "</td><td>" + to + "</td></tr>");
-                    });
-                },
-                error: () => {
-                    alert("error")
-
-                }
-            });
         })
     });
 </script>
@@ -91,9 +88,7 @@
     body
     {
         font-family:sans-serif;
-        /* background: -webkit-linear-gradient(to right, #155799, #159957); */
-        /* background: linear-gradient(to right, #155799, #159957); */
-        /* color: #eee; */
+
     }
     form {
         display: flex;
@@ -156,7 +151,7 @@
                 <nav aria-label="breadcrumb" class="bg-primary p-3 rounded-3 mb-4">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item text-light"><a href="http://localhost:8084/web/dashboard">Transaction Date</a></li>
-                        <li class="breadcrumb-item active text-light" aria-current="page">Update Profile</li>
+                        <li class="breadcrumb-item active text-light" aria-current="page"><a href="http://localhost:8084/web/profile">Update Profile</a></li>
                     </ol>
                 </nav>
             </div>
@@ -186,7 +181,7 @@
             </div>
         </div>
 
-<!--            Tables-->
+<!--            Table-->
 
         <table>
             <thead>
@@ -207,6 +202,7 @@
         </table>
 
     </div>
+</div>
 </div>
 </body>
 </html>

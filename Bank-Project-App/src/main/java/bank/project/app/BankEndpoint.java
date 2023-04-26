@@ -25,8 +25,8 @@ public class BankEndpoint {
 
     @Autowired
     private BankService bankService;
-    //soap end point to view customer details
 
+    //soap end point to view customer details
     @PayloadRoot(namespace = url, localPart = "listTransactionRequest")
     @ResponsePayload
     public ListTransactionResponse listTransactionResponse(@RequestPayload ListTransactionRequest listTransactionRequest) throws ParseException {

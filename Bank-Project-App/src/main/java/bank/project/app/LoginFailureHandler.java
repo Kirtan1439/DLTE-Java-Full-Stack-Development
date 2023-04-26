@@ -37,7 +37,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
                 super.setDefaultFailureUrl("/web/login?error=" + resourceBundle.getString("unsuccessfull"));
             } else {
                 bankService.incrementFailedAttempts(customer.getCustomer_id());
-                //GEtting the number of attempts the user is left with
+                //Getting the number of attempts the user is left with
                 int attempts = bankService.getAttempts(customer.getCustomer_id());
                 if (attempts == 1) {
                     logger.info(resourceBundle.getString("incorrect_pw") + resourceBundle.getString("attempt2"));

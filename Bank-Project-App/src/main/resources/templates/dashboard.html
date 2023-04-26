@@ -22,17 +22,14 @@
                 let toDate=$("#to").val();
                 // let user=$("#name").val();
                 $("#error").remove();
-                $(".rows").remove();
+                // $(".rows").remove();
                 // alert(fromDate+toDate+userName);
                 try {
-                    if(fromDate==""||toDate==""){
-                        throw "Please Enter Valid Date Range"
+                    if(fromDate==""){
+                        throw "Please Enter From Date"
                     }
                     else if(toDate==""){
                         throw "Please Enter To Date"
-                    }
-                    else if(fromDate==""){
-                        throw "Please Enter From Date"
                     }
                     else if (fromDate > toDate) {
                         throw "Invalid Date Range"
@@ -43,19 +40,18 @@
                     $("#responseMessage").append("<div class='row  text-danger ' id='error'><p class='text-center'>" + errormessage + "</p></div>")
 
                 }
+                $.get("http://localhost:8084/app/retrieve/" + user + "/" + fromDate + "/" + toDate, function (data) { //displaying
+                    transactionList = data;
+                    // alert(data);
+
+                    transactionList.map(function (item) {
+                            $("tbody").append("<tr class='rows'><td>" + item.txnId + "</td><td>" + item.txnFrom + "</td><td>" + item.txnAmount + "</td><td>" + item.txnStatus + "</td><td>" + item.txnDate + "</td><td>" + item.txnTo + "</td></tr>");
+                        }
+                    )
+
+                })
 
 
-                    $.get("http://localhost:8084/app/retrieve/" + user + "/" + fromDate + "/" + toDate, function (data) { //displaying
-                        // alert("hi");
-                        transactionList = data;
-                        // alert(data);
-
-                        transactionList.map(function (item) {
-                                $("tbody").append("<tr class='rows'><td>" + item.txnId + "</td><td>" + item.txnFrom + "</td><td>" + item.txnAmount + "</td><td>" + item.txnStatus + "</td><td>" + item.txnDate + "</td><td>" + item.txnTo + "</td></tr>");
-                            }
-                        )
-
-                    })
 
             })
 
@@ -66,57 +62,10 @@
         });
 
     </script>
-    <script>
-        $(document).ready(()=> {
-
-        })
-    </script>
 <!--    <script>-->
-<!--        var saopRequest="<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap=\"http://soap.transaction.project\">\n" +-->
-<!--            "   <soapenv:Header/>\n" +-->
-<!--            "   <soapenv:Body>\n" +-->
-<!--            "      <soap:listTransactionRequest>\n" +-->
-<!--            "         <soap:username>Kirtan</soap:username>\n" +-->
-<!--            "         <soap:amount1>10000</soap:amount1>\n" +-->
-<!--            "         <soap:amount2>50000</soap:amount2>\n" +-->
-<!--            "      </soap:listTransactionRequest>\n" +-->
-<!--            "   </soapenv:Body>\n" +-->
-<!--            "</soapenv:Envelope>"-->
+<!--        $(document).ready(()=> {-->
 
-<!--        $(document).ready(()=>{-->
-<!--            $.ajax({-->
-<!--                url:"http://localhost:8082/loanpoint",-->
-<!--                type:"POST",-->
-<!--                dataType:"xml",-->
-<!--                contentType:"text/xml;charset=\"UTF-8\"",-->
-<!--                data:soapRequest,-->
-<!--                success:(data)=>{-->
-<!--                    alert("Display all types of loan");-->
-<!--                    alert("Click on CALCULATE EMI for calculating EMI for your loan type")-->
-<!--                    $(data).find('ns2\\:transaction').each(function(){-->
-<!--                        var id=$(this).find('ns2\\:TxnId').text();-->
-<!--                        var  from=$(this).find('ns2\\:TxnFrom').text();-->
-<!--                        var amount=$(this).find('ns2\\:TxnAmount').text();-->
-<!--                        var status=$(this).find('ns2\\:TxnStatus').text();-->
-<!--                        var date=$(this).find('ns2\\:TxnDate').text();-->
-<!--                        var to=$(this).find('ns2\\:TxnTo').text();-->
-
-
-<!--                        $("tbody").append("<tr><td>"+id+"</td><td>"+from+"</td><td>"+amount+"</td><td>"+status+"</td><td>"+date+"</td><td>"+to+"</td></tr>");-->
-<!--                    });-->
-<!--                },-->
-<!--                error:()=>{-->
-<!--                    alert("error")-->
-
-<!--                }-->
-<!--            });-->
-<!--            $("#personalbtn").click(()=>{-->
-<!--                window.location.href="http://localhost:8082/web/personalloan?id=41";-->
-<!--            })-->
 <!--        })-->
-
-<!--        }-->
-
 <!--    </script>-->
 
 
@@ -138,6 +87,9 @@
     a{
         text-decoration: none;
         color: white;
+    }
+    h4{
+        color: black;
     }
 
     table {
@@ -203,46 +155,25 @@
         </div>
 
 
-    <marquee width="100%" direction="right" height="80px">
+    <marquee width="100% " direction="right" height="80px">
         <h4>Transaction Details</h4>
     </marquee>
         <div class="float-end">
             <!--              Button to find the range between the two dates-->
-            <div  class="d-flex">
+            <div  class="d-flex text-dark">
+<!--                <label>Date From :</label>-->
                 <input class="me-3" type="date"  id="from"   name="search">
+<!--                <label>Date To :</label>-->
                 <input class="me-3" type="date" id="to"  name="search">
                 <button class="btn btn-primary me-2" type="button"  name="search" id="search">Search</button>
 
-                <button class="btn btn-secondary me-5" type="button">Clear</button>
+                <button class="btn btn-secondary me-5" type="reset">Clear</button>
 
             </div>
             <div id="responseMessage"></div>
             <div class="d-flex mt-2 mb-2">
-
             </div>
         </div>
-
-            <!--              To find the range between the two dates-->
-
-<!--            <div>-->
-<!--                <dl>-->
-<!--                    <dt>Transaction Date From: </dt>-->
-<!--                    <dd><input type="date"  id="from"  placeholder="From" name="search" /><br></dd>-->
-<!--                    <dt>Transaction Date To:   </dt>-->
-<!--                    <dd><input type="date" id="to"  placeholder="To" name="search" /><br></dd>-->
-
-<!--                </dl>-->
-
-
-
-<!--            </div>-->
-
-
-
-
-
-
-
 
         <div class="justify-content-center mt-1 ">
 <!--        Table for transaction date-->
@@ -263,22 +194,7 @@
             </tbody>
 
         </table>
-
-<!--        <div>-->
-<!--            <label>Transaction amount Range:</label>-->
-<!--            <input type="number"  id="from"  placeholder="From" name="search"><br><br>-->
-<!--            <label>Transaction amount To:</label>-->
-<!--            <input type="date" id="to"  placeholder="From" name="search"><br><br>-->
-
-<!--            <label>User Name</label>-->
-<!--            <input type="text" id="name"  placeholder="username" name="search"><br><br>-->
-
-<!--        </div>-->
-
-
-
-
-    </div>
+        </div>
 </div>
 </div>
 </div>

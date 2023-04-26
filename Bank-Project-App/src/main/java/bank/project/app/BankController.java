@@ -25,10 +25,6 @@ public class BankController {
 
     @Autowired
     private BankService bankService;
-
-//    @Autowired
-//    private TransactionService transactionService;
-
     ResourceBundle bundle=ResourceBundle.getBundle("message");
     private Logger logger = LoggerFactory.getLogger(BankController.class);
 
@@ -45,6 +41,7 @@ public class BankController {
     }
 
 
+    //To list Transaction date from and to
     @GetMapping("/retrieve/{username}/{dateFrom}/{dateTo}")
     public List<Transaction> listTransactionDate(@PathVariable("username") String username,@PathVariable("dateFrom") String fromDate,@PathVariable("dateTo") String toDate) throws ParseException {
             logger.info("list of transaction date"+fromDate+toDate);
@@ -53,16 +50,12 @@ public class BankController {
             return listDate;
 
     }
-    @GetMapping("/list/{username}")
-    public List<Transaction> transactionList(@PathVariable("username")String username){
-            return null;
-    }
-//    @GetMapping("/gets/{username}") //to take value VIA ajax
-//    public List<Transaction> callListOfTransaction(@PathVariable("username") String username,) {
-//        List<Transaction> listTransaction=bankService.listAmount();//create object
-//
-//        return listTransaction; //return object
-//
+//    //To get Transaction list by username
+//    @GetMapping("/list/{username}")
+//    public List<Transaction> transactionList(@PathVariable("username")String username){
+//            return null;
 //    }
+
+
 
 }

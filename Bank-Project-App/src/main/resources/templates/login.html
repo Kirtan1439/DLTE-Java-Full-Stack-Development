@@ -79,17 +79,19 @@
 </style>
 <body>
 <script>
+    // Validation for Login page
     $(document).ready(()=> {
         $('#id').on('input', function () {
-            console.log("Entered the valid username");
+            // console.log("Entered the valid username");
             var username = $(this).val();
-            var validUserName = /^[a-z]{3,}$/;
+            var validUserName = /^[A-Za-z]{3,}$/;
+            // alert("hello"+username.length);
             if (username.length === 0) {
                 $('.user').addClass('invalid-msg').text("username is required!!");
                 $(this).addClass('invalid-input').removeClass('valid-input');
 
             } else if (!validUserName.test(username)) {
-                $('.user').addClass('invalid-msg').text('username must atleast 3 characters!!');
+                $('.user').addClass('invalid-msg').text('username must be at least 3 characters!!');
                 $(this).addClass('invalid-input').removeClass('valid-input');
 
             } else {
@@ -106,7 +108,7 @@
                 $(this).addClass('invalid-input').removeClass('valid-input');
 
             } else if (!validPassword.test(password)) {
-                $('.password').addClass('invalid-msg').text('password must contain more than # letters!!');
+                $('.password').addClass('invalid-msg').text('password must contain more than 4 letters!!');
                 $(this).addClass('invalid-input').removeClass('valid-input');
 
             } else {
@@ -120,6 +122,7 @@
 
 
 <div class="row">
+   <!-- Navigation bar-->
     <nav class="navbar bg-light">
         <div class="container">
             <a class="navbar-brand" href="#">
@@ -138,7 +141,7 @@
                 <input type="text" placeholder="Enter Username" name="username" id="id" required>
                 <p class="user text-danger"></p>
 
-                <br><br>
+                <br>
 
                 <!-- Password -->
                 <label class="required">Password</label>
@@ -146,10 +149,10 @@
                 <p class="password text-danger"></p>
 
                 <!-- sub container for the checkbox and forgot password link -->
-                <div class="subContainer">
+<!--                <div class="subContainer">-->
 
-                    <p class="forgotPassword"> <a href="#">Forgot Password?</a></p>
-                </div>
+<!--                    <p class="forgotPassword"> <a href="#">Forgot Password?</a></p>-->
+<!--                </div>-->
 
                 <div th:if="${param.error}">
                     <p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
@@ -158,8 +161,7 @@
                 <!-- Submit button -->
                 <button type="submit" id="btn">Login</button>
 
-                <!-- Sign up link -->
-                <!-- <p class="register">Not a member?  <a href="#">Register here!</a></p> -->
+
 
             </div>
 
